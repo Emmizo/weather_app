@@ -101,5 +101,12 @@
   "avgRainfall16Days": "Chance de pluie moy. (16 jours)",
   "primaryRecommendation": "Recommandation principale",
   "defaultRecommendation": "Planifiez en fonction de conditions météorologiques modérées.",
-  "farmingAnalysisUnavailable": "Les données d'analyse agricole ne sont pas disponibles."
+  "farmingAnalysisUnavailable": "Les données d'analyse agricole ne sont pas disponibles.",
+  "aiWeatherInsights": "Aperçus météo IA",
+  "weatherSummary": "Résumé météo",
+  "activitySuggestions": "Suggestions d'activités",
+  "clothingRecommendations": "Recommandations vestimentaires",
+  "generatingAIInsights": "Génération des aperçus IA...",
+  "retry": "Réessayer",
+  "aiInsightsError": "Impossible de charger les aperçus IA"
 }

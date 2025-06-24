@@ -370,14 +370,16 @@ class _WeatherSuggestionBannerState extends State<WeatherSuggestionBanner>
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.alertsAndTips,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context)!.alertsAndTips,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
                 if (_suggestions.length > 1) ...[
                   Text(
                     '${_currentIndex + 1}/${_suggestions.length}',
@@ -387,26 +389,80 @@ class _WeatherSuggestionBannerState extends State<WeatherSuggestionBanner>
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Row(
-                    children: List.generate(_suggestions.length, (index) {
-                      return Container(
-                        width: 10,
-                        height: 10,
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentIndex == index
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.grey.withOpacity(0.3),
-                          border: Border.all(
-                            color: _currentIndex == index
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.grey.withOpacity(0.5),
-                            width: 1,
-                          ),
-                        ),
-                      );
-                    }),
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(
+                        _suggestions.length > 5 ? 5 : _suggestions.length,
+                        (index) {
+                          // Show first 2, current, and last 2 dots if more than 5
+                          if (_suggestions.length > 5) {
+                            if (index == 0 ||
+                                index == 1 ||
+                                index == _currentIndex ||
+                                index == _suggestions.length - 2 ||
+                                index == _suggestions.length - 1) {
+                              return Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _currentIndex == index
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.grey.withValues(alpha: 0.3),
+                                  border: Border.all(
+                                    color: _currentIndex == index
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.grey.withValues(alpha: 0.5),
+                                    width: 1,
+                                  ),
+                                ),
+                              );
+                            } else if (index == 2 && _currentIndex > 2) {
+                              // Show ellipsis
+                              return Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '...',
+                                    style: TextStyle(
+                                      fontSize: 8,
+                                      color: Colors.grey.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          } else {
+                            return Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _currentIndex == index
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.grey.withValues(alpha: 0.3),
+                                border: Border.all(
+                                  color: _currentIndex == index
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.grey.withValues(alpha: 0.5),
+                                  width: 1,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ],

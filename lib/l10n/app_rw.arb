@@ -101,5 +101,12 @@
   "avgRainfall16Days": "Amahirwe y'imvura (iminsi 16)",
   "primaryRecommendation": "Inama y'ibanze",
   "defaultRecommendation": "Teganya ibikorwa byawe ukurikije uko ikirere kiri.",
-  "farmingAnalysisUnavailable": "Amakuru y'isesengura ry'ubuhinzi ntari aboneka."
+  "farmingAnalysisUnavailable": "Amakuru y'isesengura ry'ubuhinzi ntari aboneka.",
+  "aiWeatherInsights": "Ibiyemezo by'ikirere by'AI",
+  "weatherSummary": "Inyandiko y'ikirere",
+  "activitySuggestions": "Inama z'ibikorwa",
+  "clothingRecommendations": "Inama z'imyambaro",
+  "generatingAIInsights": "Gutanga ibiyemezo by'AI...",
+  "retry": "Ongera ugerageze",
+  "aiInsightsError": "Ntibishoboka gufata ibiyemezo by'AI"
 } 

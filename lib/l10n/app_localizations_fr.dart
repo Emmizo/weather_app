@@ -313,4 +313,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get farmingAnalysisUnavailable => 'Les données d\'analyse agricole ne sont pas disponibles.';
+
+  @override
+  String get aiWeatherInsights => 'Aperçus météo IA';
+
+  @override
+  String get weatherSummary => 'Résumé météo';
+
+  @override
+  String get activitySuggestions => 'Suggestions d\'activités';
+
+  @override
+  String get clothingRecommendations => 'Recommandations vestimentaires';
+
+  @override
+  String get generatingAIInsights => 'Génération des aperçus IA...';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get aiInsightsError => 'Impossible de charger les aperçus IA';
 }

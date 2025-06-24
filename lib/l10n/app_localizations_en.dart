@@ -313,4 +313,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get farmingAnalysisUnavailable => 'Farming analysis data is not available.';
+
+  @override
+  String get aiWeatherInsights => 'AI Weather Insights';
+
+  @override
+  String get weatherSummary => 'Weather Summary';
+
+  @override
+  String get activitySuggestions => 'Activity Suggestions';
+
+  @override
+  String get clothingRecommendations => 'Clothing Recommendations';
+
+  @override
+  String get generatingAIInsights => 'Generating AI insights...';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get aiInsightsError => 'Unable to load AI insights';
 }

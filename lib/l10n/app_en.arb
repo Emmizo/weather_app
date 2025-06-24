@@ -101,5 +101,12 @@
   "avgRainfall16Days": "Avg. Rainfall Chance (16 days)",
   "primaryRecommendation": "Primary Recommendation",
   "defaultRecommendation": "Plan according to moderate weather conditions.",
-  "farmingAnalysisUnavailable": "Farming analysis data is not available."
+  "farmingAnalysisUnavailable": "Farming analysis data is not available.",
+  "aiWeatherInsights": "AI Weather Insights",
+  "weatherSummary": "Weather Summary",
+  "activitySuggestions": "Activity Suggestions",
+  "clothingRecommendations": "Clothing Recommendations",
+  "generatingAIInsights": "Generating AI insights...",
+  "retry": "Retry",
+  "aiInsightsError": "Unable to load AI insights"
 }

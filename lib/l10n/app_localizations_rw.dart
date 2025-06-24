@@ -313,4 +313,25 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get farmingAnalysisUnavailable => 'Amakuru y\'isesengura ry\'ubuhinzi ntari aboneka.';
+
+  @override
+  String get aiWeatherInsights => 'Ibiyemezo by\'ikirere by\'AI';
+
+  @override
+  String get weatherSummary => 'Inyandiko y\'ikirere';
+
+  @override
+  String get activitySuggestions => 'Inama z\'ibikorwa';
+
+  @override
+  String get clothingRecommendations => 'Inama z\'imyambaro';
+
+  @override
+  String get generatingAIInsights => 'Gutanga ibiyemezo by\'AI...';
+
+  @override
+  String get retry => 'Ongera ugerageze';
+
+  @override
+  String get aiInsightsError => 'Ntibishoboka gufata ibiyemezo by\'AI';
 }

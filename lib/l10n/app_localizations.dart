@@ -708,6 +708,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Farming analysis data is not available.'**
   String get farmingAnalysisUnavailable;
+
+  /// No description provided for @aiWeatherInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Weather Insights'**
+  String get aiWeatherInsights;
+
+  /// No description provided for @weatherSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather Summary'**
+  String get weatherSummary;
+
+  /// No description provided for @activitySuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Suggestions'**
+  String get activitySuggestions;
+
+  /// No description provided for @clothingRecommendations.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothing Recommendations'**
+  String get clothingRecommendations;
+
+  /// No description provided for @generatingAIInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating AI insights...'**
+  String get generatingAIInsights;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @aiInsightsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load AI insights'**
+  String get aiInsightsError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

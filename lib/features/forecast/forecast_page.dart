@@ -17,10 +17,13 @@ import '../../core/utils/locations_provider.dart';
 import 'widgets/astro_card.dart';
 import 'widgets/air_quality_card.dart';
 import 'widgets/weather_suggestion_banner.dart';
-import 'widgets/farming_prediction_card.dart';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import '../../core/api/api_keys.dart';
+import 'widgets/ai_weather_insights_screen.dart';
+import 'widgets/farming_prediction_screen.dart';
+import 'package:geolocator/geolocator.dart';
+import '../../core/models/location.dart';
 
 enum MapLayerType { none, wind, temp, rain }
 
@@ -35,6 +38,7 @@ class _ForecastPageState extends State<ForecastPage>
     with SingleTickerProviderStateMixin {
   MapLayerType _selectedLayer = MapLayerType.wind;
   late final AnimationController _windController;
+  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -46,9 +50,93 @@ class _ForecastPageState extends State<ForecastPage>
   }
 
   @override
-  void dispose() {
-    _windController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _initializeLocation();
+      _isInitialized = true;
+    }
+  }
+
+  Future<void> _initializeLocation() async {
+    final searchProvider = context.read<SearchProvider>();
+    final forecastProvider = context.read<ForecastProvider>();
+    final locationsProvider = context.read<LocationsProvider>();
+
+    // If we already have a location, don't initialize
+    if (searchProvider.location != null) {
+      return;
+    }
+
+    // Check if we have a saved location
+    if (locationsProvider.selected != null) {
+      searchProvider.setLocation(locationsProvider.selected!);
+      await forecastProvider.fetchForecast(locationsProvider.selected!);
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location services are disabled.');
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permission denied.');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('Location permission denied forever.');
+      }
+
+      final position = await Geolocator.getCurrentPosition();
+      final location = Location(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        name: l10n.currentLocation,
+      );
+
+      if (!mounted) return;
+
+      searchProvider.setLocation(location);
+      await forecastProvider.fetchForecast(location);
+    } catch (e) {
+      // Try to use last known position
+      try {
+        final lastPosition = await Geolocator.getLastKnownPosition();
+        if (lastPosition != null) {
+          final location = Location(
+            latitude: lastPosition.latitude,
+            longitude: lastPosition.longitude,
+            name: l10n.lastKnownLocation,
+          );
+
+          if (!mounted) return;
+
+          searchProvider.setLocation(location);
+          await forecastProvider.fetchForecast(location);
+          return;
+        }
+      } catch (_) {}
+
+      // Fallback to default city (Kigali)
+      final defaultLocation = Location(
+        latitude: -1.9577,
+        longitude: 30.1127,
+        name: 'Kigali',
+      );
+
+      if (!mounted) return;
+
+      searchProvider.setLocation(defaultLocation);
+      await forecastProvider.fetchForecast(defaultLocation);
+    }
   }
 
   void _showLocationsSheet(BuildContext context) {
@@ -134,6 +222,8 @@ class _ForecastPageState extends State<ForecastPage>
     final themeProvider = Provider.of<ThemeProvider>(context);
     final unitProvider = Provider.of<UnitProvider>(context);
     final l10n = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isTablet = screenWidth >= 700;
     return Scaffold(
       appBar: AppBar(
         title: Text(location?.name ?? l10n.currentLocation),
@@ -232,10 +322,74 @@ class _ForecastPageState extends State<ForecastPage>
                           airQuality: provider.hourlyAirQuality,
                           outlookAnalysis: provider.outlookAnalysis,
                         ),
-                        FarmingPredictionCard(
-                          analysis: provider.outlookAnalysis,
-                        ),
-                        if (location != null &&
+                        if (!isTablet)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 8.0,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    icon: const Icon(Icons.psychology),
+                                    label: Text(l10n.aiWeatherInsights),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AIWeatherInsightsScreen(
+                                                currentWeather:
+                                                    provider.currentWeather!,
+                                                hourlyForecasts:
+                                                    provider.hourlyForecasts ??
+                                                    [],
+                                                dailyForecasts: forecasts,
+                                                airQuality:
+                                                    provider
+                                                            .hourlyAirQuality
+                                                            ?.isNotEmpty ==
+                                                        true
+                                                    ? provider
+                                                          .hourlyAirQuality!
+                                                          .first
+                                                    : null,
+                                                locationName:
+                                                    location?.name ??
+                                                    l10n.currentLocation,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    icon: const Icon(Icons.agriculture),
+                                    label: Text(
+                                      l10n.farmingPredictionCardTitle,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              FarmingPredictionScreen(
+                                                analysis:
+                                                    provider.outlookAnalysis,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (!isTablet &&
+                            location != null &&
                             location.latitude != 0.0 &&
                             location.longitude != 0.0)
                           Padding(
@@ -424,6 +578,12 @@ class _ForecastPageState extends State<ForecastPage>
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _windController.dispose();
+    super.dispose();
   }
 }
 
