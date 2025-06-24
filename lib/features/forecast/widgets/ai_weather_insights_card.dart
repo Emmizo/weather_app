@@ -125,11 +125,14 @@ class _AIWeatherInsightsCardState extends State<AIWeatherInsightsCard> {
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    l10n.aiWeatherInsights,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
+                  Expanded(
+                    child: Text(
+                      l10n.aiWeatherInsights,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const Spacer(),

@@ -13,6 +13,9 @@ class OpenAIService {
 
   final http.Client _client = http.Client();
 
+  static const String _agriAdvisorSystemPrompt =
+      'You are an Agricultural Weather Advisor specialized in helping farmers make informed decisions based on short-term and long-term weather forecasts. Your job is to interpret weather data in simple, actionable language. You give advice on crop planting, irrigation, fertilizer use, pest prevention, and harvest timing, based on location, season, and crop type. Use local context and be clear, friendly, and practical. Translate to Kinyarwanda if requested. Always prioritize farmer safety and productivity.';
+
   Future<String> generateWeatherInsights({
     required Weather currentWeather,
     required List<HourlyWeather> hourlyForecasts,
@@ -40,11 +43,7 @@ class OpenAIService {
         body: jsonEncode({
           'model': 'gpt-3.5-turbo',
           'messages': [
-            {
-              'role': 'system',
-              'content':
-                  'You are a helpful weather assistant that provides personalized insights and recommendations based on weather data. Keep responses concise, friendly, and actionable. Always respond in the language specified by the user.',
-            },
+            {'role': 'system', 'content': _agriAdvisorSystemPrompt},
             {'role': 'user', 'content': prompt},
           ],
           'max_tokens': 500,
@@ -87,11 +86,7 @@ class OpenAIService {
         body: jsonEncode({
           'model': 'gpt-3.5-turbo',
           'messages': [
-            {
-              'role': 'system',
-              'content':
-                  'You are a helpful assistant that suggests outdoor and indoor activities based on weather conditions. Provide 3-5 specific, practical suggestions. Always respond in the language specified by the user.',
-            },
+            {'role': 'system', 'content': _agriAdvisorSystemPrompt},
             {'role': 'user', 'content': prompt},
           ],
           'max_tokens': 300,
@@ -132,11 +127,7 @@ class OpenAIService {
         body: jsonEncode({
           'model': 'gpt-3.5-turbo',
           'messages': [
-            {
-              'role': 'system',
-              'content':
-                  'You are a helpful assistant that suggests appropriate clothing based on weather conditions. Provide specific, practical clothing recommendations. Always respond in the language specified by the user.',
-            },
+            {'role': 'system', 'content': _agriAdvisorSystemPrompt},
             {'role': 'user', 'content': prompt},
           ],
           'max_tokens': 250,
@@ -281,5 +272,88 @@ Suggest appropriate clothing for these conditions, considering the temperature r
 
   void dispose() {
     _client.close();
+  }
+
+  // --- New Agricultural Prompt Builders ---
+
+  String buildGeneralForecastAdvicePrompt({
+    required String crop,
+    required String district,
+    required String weatherData,
+    required String languageCode,
+  }) {
+    final languageInstruction = _getLanguageInstruction(languageCode);
+    return '''
+$languageInstruction
+
+Based on this 5-day weather forecast for $crop farmers in $district, what advice would you give about planting, irrigation, and disease risks?
+Weather data: $weatherData
+''';
+  }
+
+  String buildNotificationAlertPrompt({
+    required String location,
+    required String alertType,
+    required String languageCode,
+  }) {
+    final languageInstruction = _getLanguageInstruction(languageCode);
+    return '''
+$languageInstruction
+
+Generate an SMS alert in simple language for farmers in $location warning them about $alertType. Include crop safety tips. Limit to 160 characters.
+''';
+  }
+
+  String buildFertilizerDecisionPrompt({
+    required String crop,
+    required String forecastSummary,
+    required String day,
+    required String languageCode,
+  }) {
+    final languageInstruction = _getLanguageInstruction(languageCode);
+    return '''
+$languageInstruction
+
+The weather forecast for this week shows $forecastSummary. Should $crop farmers apply fertilizer on $day, or wait until after the rain?
+''';
+  }
+
+  String buildPestDiseaseAlertPrompt({
+    required String crop,
+    required String location,
+    required String weatherCondition,
+    required String languageCode,
+  }) {
+    final languageInstruction = _getLanguageInstruction(languageCode);
+    return '''
+$languageInstruction
+
+If $weatherCondition, what pest or disease risks should $crop farmers in $location be aware of?
+''';
+  }
+
+  /// Builds a warning prompt based on forecast severity, customizable for any weather risk.
+  String buildWarningPrompt({
+    required String rainfall,
+    required String wind,
+    required String temperature,
+    required String humidity,
+    required String location,
+    required String crop,
+    required String languageCode,
+  }) {
+    final languageInstruction = _getLanguageInstruction(languageCode);
+    return '''
+$languageInstruction
+
+Based on the following weather forecast, generate a clear warning message for farmers. Highlight any risks such as flooding, strong winds, drought, or pest/disease conditions based on the severity of rainfall, temperature, humidity, or wind. Add a short, practical advice.
+Forecast data:
+Rainfall: $rainfall mm/day
+Wind: $wind km/h
+Temperature: $temperature°C
+Humidity: $humidity%
+Location: $location
+Crop: $crop
+''';
   }
 }
